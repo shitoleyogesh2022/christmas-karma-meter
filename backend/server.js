@@ -23,7 +23,17 @@ app.use(express.urlencoded({ extended: true }));
 
 // Health check
 app.get('/health', (req, res) => {
-    res.json({ status: 'OK', message: 'Christmas Karma Backend is running!' });
+    res.json({ 
+        status: 'OK', 
+        message: 'Christmas Karma Backend is running!',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime()
+    });
+});
+
+// Keep-alive ping endpoint
+app.get('/ping', (req, res) => {
+    res.send('pong');
 });
 
 // Create Order
