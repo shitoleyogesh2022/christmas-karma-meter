@@ -3,7 +3,7 @@ const CONFIG = {
     // Backend URL Configuration
     BACKEND_URL: {
         development: 'http://localhost:3000',
-        production: 'https://your-backend-url.herokuapp.com' // Replace with your actual backend URL
+        production: 'https://christmas-karma-backend.onrender.com'
     },
     
     // Get current backend URL based on environment
