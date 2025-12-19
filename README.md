@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🎄 Christmas Karma Meter
 
 A touchy and emotional Christmas app that measures users' holiday spirit through heartfelt questions. Perfect for viral sharing during the Christmas season!
@@ -89,3 +90,7 @@ Free to use and modify for personal or commercial projects.
 ---
 
 **Made with ❤️ for spreading Christmas joy!**
+=======
+# christmas-karma-meter
+🎄 Christmas Karma Meter - Discover Your Holiday Spirit
+>>>>>>> 255872d74d9c7a9e698b2fb69b85c2236461a8c4
