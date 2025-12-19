@@ -298,40 +298,64 @@ class ChristmasKarmaMeter {
         this.showScreen('premium-screen');
     }
 
-    buyPremium() {
-        const options = {
-            "key": RAZORPAY_CONFIG.KEY_ID,
-            "amount": RAZORPAY_CONFIG.AMOUNT,
-            "currency": RAZORPAY_CONFIG.CURRENCY,
-            "name": RAZORPAY_CONFIG.BUSINESS_NAME,
-            "description": RAZORPAY_CONFIG.DESCRIPTION,
-            "image": RAZORPAY_CONFIG.LOGO,
-            "handler": (response) => {
+    async buyPremium() {
+        try {
+            const backendUrl = CONFIG.getBackendUrl();
+            
+            const orderResponse = await fetch(`${backendUrl}/api/create-order`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount: 4900, currency: 'INR' })
+            });
+            
+            const orderData = await orderResponse.json();
+            if (!orderData.success) throw new Error('Failed to create order');
+            
+            const options = {
+                "key": orderData.key_id,
+                "amount": orderData.amount,
+                "currency": orderData.currency,
+                "name": "Christmas Karma Meter",
+                "description": "Premium Christmas Insights",
+                "order_id": orderData.order_id,
+                "handler": (response) => this.verifyPayment(response),
+                "prefill": { "name": "Christmas User", "email": "christmaskarmameter@gmail.com" },
+                "theme": { "color": "#ff6b6b" }
+            };
+            
+            const rzp = new Razorpay(options);
+            rzp.on('payment.failed', (response) => {
+                alert('🚫 Payment Failed: ' + response.error.description);
+            });
+            rzp.open();
+        } catch (error) {
+            alert('🚫 Failed to initiate payment. Please try again.');
+        }
+    }
+    
+    async verifyPayment(response) {
+        try {
+            const backendUrl = CONFIG.getBackendUrl();
+            
+            const verifyResponse = await fetch(`${backendUrl}/api/verify-payment`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature
+                })
+            });
+            
+            const verifyData = await verifyResponse.json();
+            if (verifyData.success) {
                 this.handlePaymentSuccess(response);
-            },
-            "modal": {
-                "ondismiss": () => {
-                    console.log('Payment cancelled');
-                }
-            },
-            "prefill": {
-                "name": "Christmas User",
-                "email": "user@example.com"
-            },
-            "theme": {
-                "color": RAZORPAY_CONFIG.THEME_COLOR
-            }
-        };
-        
-        const rzp = new Razorpay(options);
-        rzp.on('payment.failed', (response) => {
-            if (response.error.description.includes('International cards')) {
-                alert('🚫 International cards not enabled!\n\n✅ Use Indian test cards:\n• Card: 5267 3181 8797 5449\n• CVV: 123\n• Expiry: 12/25\n\nOr try:\n• NetBanking (any test bank)\n• UPI: success@razorpay');
             } else {
-                alert('Payment Failed: ' + response.error.description);
+                throw new Error('Payment verification failed');
             }
-        });
-        rzp.open();
+        } catch (error) {
+            alert('🚫 Payment verification failed. Please contact support.');
+        }
     }
 
     handlePaymentSuccess(response) {
