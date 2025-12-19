@@ -1,0 +1,468 @@
+class ChristmasKarmaMeter {
+    constructor() {
+        this.currentQuestion = 0;
+        this.score = 0;
+        this.answers = [];
+        this.sharesUsed = 0;
+        this.maxFreeShares = localStorage.getItem('premiumUser') ? 999 : 1;
+        this.questionImages = ['🎅', '🎁', '🤝', '👨‍👩‍👧‍👦', '😌', '💝', '🌍'];
+        this.questions = [
+            {
+                text: "When you see someone struggling with heavy shopping bags, what do you do?",
+                image: "🎅",
+                options: [
+                    { text: "Immediately offer to help carry them", points: 5 },
+                    { text: "Ask if they need assistance", points: 4 },
+                    { text: "Smile and continue walking", points: 2 },
+                    { text: "Pretend not to notice", points: 1 }
+                ]
+            },
+            {
+                text: "How do you feel about giving gifts during Christmas?",
+                image: "🎁",
+                options: [
+                    { text: "I love finding the perfect gift for each person", points: 5 },
+                    { text: "I enjoy giving but sometimes stress about it", points: 4 },
+                    { text: "I give because it's expected", points: 2 },
+                    { text: "I prefer receiving over giving", points: 1 }
+                ]
+            },
+            {
+                text: "A homeless person asks for help on Christmas Eve. You:",
+                image: "🤝",
+                options: [
+                    { text: "Buy them a warm meal and spend time talking", points: 5 },
+                    { text: "Give them money and wish them well", points: 4 },
+                    { text: "Apologize and say you have no cash", points: 2 },
+                    { text: "Avoid eye contact and walk away", points: 1 }
+                ]
+            },
+            {
+                text: "Your family is arguing during Christmas dinner. You:",
+                image: "👨‍👩‍👧‍👦",
+                options: [
+                    { text: "Try to mediate and bring peace", points: 5 },
+                    { text: "Change the subject to something positive", points: 4 },
+                    { text: "Stay quiet and hope it passes", points: 2 },
+                    { text: "Leave the table", points: 1 }
+                ]
+            },
+            {
+                text: "How do you handle Christmas stress?",
+                image: "😌",
+                options: [
+                    { text: "Focus on gratitude and helping others", points: 5 },
+                    { text: "Take deep breaths and remember what matters", points: 4 },
+                    { text: "Complain to friends and family", points: 2 },
+                    { text: "Get irritated with everyone around me", points: 1 }
+                ]
+            },
+            {
+                text: "When someone gives you a gift you don't like, you:",
+                image: "💝",
+                options: [
+                    { text: "Express genuine gratitude for their thoughtfulness", points: 5 },
+                    { text: "Thank them warmly despite your feelings", points: 4 },
+                    { text: "Say thanks but show little enthusiasm", points: 2 },
+                    { text: "Make it obvious you don't like it", points: 1 }
+                ]
+            },
+            {
+                text: "Your Christmas wish for the world would be:",
+                image: "🌍",
+                options: [
+                    { text: "Peace, love, and an end to suffering", points: 5 },
+                    { text: "Happiness and health for everyone", points: 4 },
+                    { text: "A better year ahead", points: 2 },
+                    { text: "Good things for me and my loved ones", points: 1 }
+                ]
+            }
+        ];
+        
+        this.karmaLevels = [
+            {
+                min: 30, max: 35,
+                title: "🌟 Christmas Angel",
+                message: "WOW! You're absolutely incredible! 💫 Your heart radiates pure Christmas magic. You're the reason people believe in miracles and kindness. Keep spreading that beautiful light - the world needs more angels like you! ✨"
+            },
+            {
+                min: 25, max: 29,
+                title: "🎄 Holiday Hero",
+                message: "Amazing! You're a true Christmas champion! 🏆 Your generous spirit and caring heart make every day brighter. You understand that love multiplies when shared. Keep being the hero in someone's story! 💝"
+            },
+            {
+                min: 20, max: 24,
+                title: "❄️ Festive Friend",
+                message: "You're wonderful! Your warm heart is already making a difference! 🤗 You have so much love to give, and every small act of kindness creates ripples of joy. You're closer to Christmas magic than you think! 🌟"
+            },
+            {
+                min: 15, max: 19,
+                title: "🎁 Holiday Learner",
+                message: "You're on a beautiful journey! 🌈 Every step toward kindness matters, and you're already showing such promise. This Christmas season is your chance to discover the incredible joy that comes from giving and loving! 💖"
+            },
+            {
+                min: 7, max: 14,
+                title: "🔔 Christmas Seeker",
+                message: "Your adventure begins now! 🚀 Everyone starts somewhere, and recognizing the need for more love in your life is the first beautiful step. This Christmas, open your heart and watch the magic unfold! You've got this! 💪✨"
+            }
+        ];
+
+        this.init();
+    }
+
+    init() {
+        this.createSnowfall();
+        this.bindEvents();
+        this.checkPremiumStatus();
+    }
+
+    checkPremiumStatus() {
+        if (localStorage.getItem('premiumUser')) {
+            document.getElementById('premium-access').style.display = 'block';
+        }
+    }
+
+    createSnowfall() {
+        const snowContainer = document.querySelector('.snow-container');
+        const snowflakes = ['❄', '❅', '❆'];
+        
+        for (let i = 0; i < 50; i++) {
+            const snowflake = document.createElement('div');
+            snowflake.className = 'snowflake';
+            snowflake.innerHTML = snowflakes[Math.floor(Math.random() * snowflakes.length)];
+            snowflake.style.left = Math.random() * 100 + '%';
+            snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
+            snowflake.style.animationDelay = Math.random() * 2 + 's';
+            snowContainer.appendChild(snowflake);
+        }
+    }
+
+    bindEvents() {
+        document.getElementById('start-btn').addEventListener('click', () => this.startQuiz());
+        document.getElementById('restart-btn').addEventListener('click', () => this.restart());
+        document.getElementById('share-btn').addEventListener('click', () => this.shareResult());
+        document.getElementById('premium-btn').addEventListener('click', () => {
+            if (localStorage.getItem('premiumUser')) {
+                this.showPremiumDashboard();
+            } else {
+                this.showPremium();
+            }
+        });
+        document.getElementById('buy-premium').addEventListener('click', () => this.buyPremium());
+        document.getElementById('back-to-result').addEventListener('click', () => this.showResult());
+        document.getElementById('back-to-main').addEventListener('click', () => {
+            if (this.score > 0) {
+                this.showResult();
+            } else {
+                this.showScreen('welcome-screen');
+            }
+        });
+        document.getElementById('dashboard-btn').addEventListener('click', () => this.showPremiumDashboard());
+        
+        // Tab switching and activity completion - will be bound after DOM loads
+        setTimeout(() => {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => this.switchTab(e.target.dataset.tab));
+            });
+            
+            document.querySelectorAll('.activity-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.target.textContent = 'Completed! ✅';
+                    e.target.classList.add('completed');
+                    e.target.disabled = true;
+                });
+            });
+        }, 100);
+    }
+
+    startQuiz() {
+        this.showScreen('quiz-screen');
+        this.displayQuestion();
+    }
+
+    displayQuestion() {
+        const question = this.questions[this.currentQuestion];
+        document.getElementById('question-text').textContent = question.text;
+        document.getElementById('question-image').textContent = question.image;
+        
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+        
+        // Shuffle options to prevent predictable answers
+        const shuffledOptions = [...question.options].sort(() => Math.random() - 0.5);
+        
+        shuffledOptions.forEach((option, index) => {
+            const optionElement = document.createElement('div');
+            optionElement.className = 'option';
+            optionElement.textContent = option.text;
+            optionElement.addEventListener('click', () => this.selectOption(option.points, optionElement));
+            optionsContainer.appendChild(optionElement);
+        });
+
+        this.updateProgress();
+    }
+
+    selectOption(points, optionElement) {
+        optionElement.classList.add('selected');
+        this.createConfetti();
+        
+        this.score += points;
+        this.answers.push(points);
+        this.currentQuestion++;
+
+        if (this.currentQuestion < this.questions.length) {
+            setTimeout(() => this.displayQuestion(), 800);
+        } else {
+            setTimeout(() => {
+                this.createTreasureBlast();
+                setTimeout(() => this.showResult(), 1000);
+            }, 500);
+        }
+    }
+
+    updateProgress() {
+        const progress = ((this.currentQuestion + 1) / this.questions.length) * 100;
+        document.getElementById('progress').style.width = progress + '%';
+        
+        const treasureBox = document.getElementById('treasure-box');
+        if (progress === 100) {
+            treasureBox.style.animation = 'bounce 0.5s ease-out, glow 0.5s ease-out, spin 1s ease-out';
+        }
+    }
+
+    showResult() {
+        const karmaLevel = this.karmaLevels.find(level => 
+            this.score >= level.min && this.score <= level.max
+        );
+
+        const percentage = Math.round((this.score / 35) * 100);
+        document.getElementById('karma-score').textContent = percentage + '%';
+        document.getElementById('karma-title').textContent = karmaLevel.title;
+        document.getElementById('karma-message').textContent = karmaLevel.message;
+        
+        if (localStorage.getItem('premiumUser')) {
+            document.querySelector('.share-counter').style.display = 'none';
+            document.getElementById('premium-btn').textContent = 'Access Karma Dashboard ✨';
+        } else {
+            const sharesLeft = this.maxFreeShares - this.sharesUsed;
+            document.getElementById('shares-left').textContent = sharesLeft;
+            if (this.sharesUsed > 0 && sharesLeft <= 0) {
+                document.querySelector('.share-counter').style.background = 'linear-gradient(135deg, #ffebee, #ffcdd2)';
+                document.querySelector('.share-counter p').innerHTML = 'Share with more friends? <strong>Unlock Premium!</strong>';
+            }
+        }
+
+        this.showScreen('result-screen');
+    }
+
+    shareResult() {
+        if (this.sharesUsed >= this.maxFreeShares) {
+            alert('🎁 You\'ve used your free share! Get Premium for unlimited sharing and detailed insights!');
+            this.showPremium();
+            return;
+        }
+
+        const karmaLevel = this.karmaLevels.find(level => 
+            this.score >= level.min && this.score <= level.max
+        );
+
+        const shareText = `🎄 I just discovered my Christmas Karma! I'm a ${karmaLevel.title} with a score of ${this.score}/35! ✨ Can you beat my score? Take the test: ChristmasKarmaMeter.com 🎁 #ChristmasKarma #HolidaySpirit`;
+        
+        this.sharesUsed++;
+        
+        if (!localStorage.getItem('premiumUser')) {
+            const sharesLeft = this.maxFreeShares - this.sharesUsed;
+            document.getElementById('shares-left').textContent = sharesLeft;
+            if (sharesLeft <= 0) {
+                document.querySelector('.share-counter').style.background = 'linear-gradient(135deg, #ffebee, #ffcdd2)';
+                document.querySelector('.share-counter p').innerHTML = 'Share with more friends? <strong>Unlock Premium!</strong>';
+            }
+        }
+        
+        if (navigator.share) {
+            navigator.share({
+                title: 'My Christmas Karma Result',
+                text: shareText,
+                url: window.location.href
+            });
+        } else {
+            navigator.clipboard.writeText(shareText).then(() => {
+                alert('🎄 Result copied! Challenge your friends to beat your karma score!');
+            });
+        }
+        
+        this.createShareCelebration();
+    }
+
+    showPremium() {
+        this.showScreen('premium-screen');
+    }
+
+    buyPremium() {
+        const options = {
+            "key": RAZORPAY_CONFIG.KEY_ID,
+            "amount": RAZORPAY_CONFIG.AMOUNT,
+            "currency": RAZORPAY_CONFIG.CURRENCY,
+            "name": RAZORPAY_CONFIG.BUSINESS_NAME,
+            "description": RAZORPAY_CONFIG.DESCRIPTION,
+            "image": RAZORPAY_CONFIG.LOGO,
+            "handler": (response) => {
+                this.handlePaymentSuccess(response);
+            },
+            "modal": {
+                "ondismiss": () => {
+                    console.log('Payment cancelled');
+                }
+            },
+            "prefill": {
+                "name": "Christmas User",
+                "email": "user@example.com"
+            },
+            "theme": {
+                "color": RAZORPAY_CONFIG.THEME_COLOR
+            }
+        };
+        
+        const rzp = new Razorpay(options);
+        rzp.on('payment.failed', (response) => {
+            if (response.error.description.includes('International cards')) {
+                alert('🚫 International cards not enabled!\n\n✅ Use Indian test cards:\n• Card: 5267 3181 8797 5449\n• CVV: 123\n• Expiry: 12/25\n\nOr try:\n• NetBanking (any test bank)\n• UPI: success@razorpay');
+            } else {
+                alert('Payment Failed: ' + response.error.description);
+            }
+        });
+        rzp.open();
+    }
+
+    handlePaymentSuccess(response) {
+        console.log('Payment Success:', response);
+        
+        // Enable premium features
+        this.maxFreeShares = 999;
+        localStorage.setItem('premiumUser', 'true');
+        localStorage.setItem('paymentId', response.razorpay_payment_id);
+        
+        alert('🎄 Payment Successful! Welcome to Premium! ✨');
+        this.showPremiumDashboard();
+    }
+
+    showPremiumDashboard() {
+        this.generatePremiumAnalysis();
+        this.showScreen('premium-dashboard');
+    }
+
+    generatePremiumAnalysis() {
+        const empathyScore = Math.floor(Math.random() * 20) + 75;
+        const generosityScore = Math.floor(Math.random() * 25) + 70;
+        const peaceScore = Math.floor(Math.random() * 30) + 65;
+        
+        document.getElementById('empathy-score').style.width = empathyScore + '%';
+        document.getElementById('generosity-score').style.width = generosityScore + '%';
+        document.getElementById('peace-score').style.width = peaceScore + '%';
+        
+        document.getElementById('empathy-text').textContent = this.getScoreText(empathyScore, 'empathy');
+        document.getElementById('generosity-text').textContent = this.getScoreText(generosityScore, 'generosity');
+        document.getElementById('peace-text').textContent = this.getScoreText(peaceScore, 'peace');
+    }
+
+    getScoreText(score, type) {
+        const texts = {
+            empathy: {
+                high: "You deeply understand others' feelings and respond with compassion.",
+                medium: "You show good emotional awareness and care for others.",
+                low: "You're developing your ability to connect with others emotionally."
+            },
+            generosity: {
+                high: "You give freely of your time, resources, and love to others.",
+                medium: "You enjoy helping others and sharing what you have.",
+                low: "You're learning to find joy in giving and helping others."
+            },
+            peace: {
+                high: "You naturally bring calm and resolution to conflicts.",
+                medium: "You prefer harmony and work to maintain peaceful relationships.",
+                low: "You're developing skills to handle conflicts constructively."
+            }
+        };
+        
+        if (score >= 80) return texts[type].high;
+        if (score >= 60) return texts[type].medium;
+        return texts[type].low;
+    }
+
+    switchTab(tabName) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        document.getElementById(`${tabName}-tab`).classList.add('active');
+    }
+
+    showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.remove('active');
+        });
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    createConfetti() {
+        const container = document.getElementById('confetti-container');
+        const confettiEmojis = ['🎉', '✨', '🎊', '⭐', '💫', '🌟'];
+        
+        for (let i = 0; i < 15; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.textContent = confettiEmojis[Math.floor(Math.random() * confettiEmojis.length)];
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.animationDelay = Math.random() * 0.5 + 's';
+            container.appendChild(confetti);
+            
+            setTimeout(() => confetti.remove(), 3000);
+        }
+    }
+
+    createTreasureBlast() {
+        const container = document.getElementById('confetti-container');
+        const treasureEmojis = ['🎁', '💎', '👑', '🏆', '🌟', '✨'];
+        
+        for (let i = 0; i < 30; i++) {
+            const blast = document.createElement('div');
+            blast.className = 'confetti';
+            blast.textContent = treasureEmojis[Math.floor(Math.random() * treasureEmojis.length)];
+            blast.style.left = Math.random() * 100 + '%';
+            blast.style.animationDelay = Math.random() * 0.3 + 's';
+            blast.style.fontSize = '2rem';
+            container.appendChild(blast);
+            
+            setTimeout(() => blast.remove(), 3000);
+        }
+    }
+
+    createShareCelebration() {
+        const container = document.getElementById('confetti-container');
+        const shareEmojis = ['💝', '🤝', '💕', '🎄', '❤️', '🎊'];
+        
+        for (let i = 0; i < 20; i++) {
+            const celebration = document.createElement('div');
+            celebration.className = 'confetti';
+            celebration.textContent = shareEmojis[Math.floor(Math.random() * shareEmojis.length)];
+            celebration.style.left = Math.random() * 100 + '%';
+            celebration.style.animationDelay = Math.random() * 0.2 + 's';
+            container.appendChild(celebration);
+            
+            setTimeout(() => celebration.remove(), 3000);
+        }
+    }
+
+    restart() {
+        this.currentQuestion = 0;
+        this.score = 0;
+        this.answers = [];
+        this.sharesUsed = 0;
+        this.showScreen('welcome-screen');
+    }
+}
+
+// Initialize the app when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    new ChristmasKarmaMeter();
+});

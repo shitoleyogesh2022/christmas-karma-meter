@@ -1,0 +1,25 @@
+# Sensitive files - DO NOT COMMIT
+payment-config.js
+.env
+*.env
+
+# Development files
+node_modules/
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎄 Christmas Karma Meter - Discover Your Holiday Spirit</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="snow-container"></div>
+    
+    <div class="container">
+        <header class="header">
+            <h1 class="title"><span class="tree-emoji">🎄</span> Christmas Karma Meter</h1>
+            <p class="subtitle">Discover the magic of your holiday spirit</p>
+            <div class="quick-info">
+                <span>⏱️ Takes less than 60 seconds</span>
+                <span>❤️ No login required</span>
+            </div>
+        </header>
+
+        <div id="welcome-screen" class="screen active">
+            <div class="welcome-content">
+                <div class="karma-icon">✨</div>
+                <h2>Ready to discover your Christmas Karma?</h2>
+                <p>Answer heartfelt questions about your holiday spirit and get your personalized karma score!</p>
+                <p class="curiosity-hook">🌲 Your answers might surprise you...</p>
+                <button id="start-btn" class="btn-primary">🌲 Discover My Christmas Karma</button>
+                <div id="premium-access" class="premium-access" style="display: none;">
+                    <button id="dashboard-btn" class="btn-premium">✨ Access Premium Dashboard</button>
+                </div>
+                <p class="social-proof">⭐ Loved by festive souls this season</p>
+            </div>
+        </div>
+
+        <div id="quiz-screen" class="screen">
+            <div class="progress-section">
+                <div class="progress-bar">
+                    <div id="progress" class="progress-fill"></div>
+                    <div id="treasure-box" class="treasure-box">🎁</div>
+                </div>
+                <p class="progress-text">Your Christmas treasure awaits...</p>
+            </div>
+            <div class="question-container">
+                <div id="question-image" class="question-image"></div>
+                <h3 id="question-text"></h3>
+                <div id="options-container" class="options"></div>
+            </div>
+            <div id="confetti-container" class="confetti-container"></div>
+        </div>
+
+        <div id="result-screen" class="screen">
+            <div class="result-content">
+                <div id="karma-score" class="karma-display"></div>
+                <h2 id="karma-title"></h2>
+                <p id="karma-message"></p>
+                <div class="share-section">
+                    <div class="share-counter">
+                        <p>Shares remaining: <span id="shares-left">1</span> free</p>
+                    </div>
+                    <button id="share-btn" class="btn-share">Share Your Karma ✨</button>
+                    <div class="share-motivation">
+                        <p>🎄 Challenge your friends to beat your karma score!</p>
+                        <p class="premium-hint">🎁 Premium Unlocks: Unlimited Shares + Detailed Analysis + Personal Growth Plan + Karma Boosting Activities! ✨</p>
+                    </div>
+                    <button id="premium-btn" class="btn-premium">Unlock Karma Dashboard 🎄</button>
+                </div>
+                <button id="restart-btn" class="btn-secondary">Take Test Again</button>
+            </div>
+        </div>
+
+        <div id="premium-screen" class="screen">
+            <div class="premium-content">
+                <h2>🎁 Premium Christmas Insights</h2>
+                <div class="premium-features">
+                    <div class="feature">
+                        <span class="feature-icon">🔄</span>
+                        <h3>Unlimited Shares</h3>
+                        <p>Share with all your friends & family</p>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">📊</span>
+                        <h3>Detailed Karma Analysis</h3>
+                        <p>Deep dive into your holiday personality traits</p>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">🎯</span>
+                        <h3>Personal Growth Plan</h3>
+                        <p>Custom roadmap to boost your Christmas spirit</p>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">🎄</span>
+                        <h3>Karma Boosting Activities</h3>
+                        <p>Daily challenges to spread more joy</p>
+                    </div>
+                </div>
+                <div class="pricing">
+                    <div class="price">₹49</div>
+                    <p>One-time payment for lifetime access</p>
+                </div>
+                <button id="buy-premium" class="btn-premium">Unlock Premium 🔓</button>
+                <button id="back-to-result" class="btn-secondary">Back to Results</button>
+            </div>
+        </div>
+
+        <div id="premium-dashboard" class="screen">
+            <div class="premium-dashboard-content">
+                <div class="premium-header">
+                    <h2>✨ Premium Dashboard</h2>
+                    <div class="premium-badge">PREMIUM USER</div>
+                </div>
+                
+                <div class="dashboard-tabs">
+                    <button class="tab-btn active" data-tab="analysis">📊 Analysis</button>
+                    <button class="tab-btn" data-tab="growth">🎯 Growth Plan</button>
+                    <button class="tab-btn" data-tab="activities">🎄 Activities</button>
+                </div>
+
+                <div id="analysis-tab" class="tab-content active">
+                    <h3>🧠 Detailed Karma Analysis</h3>
+                    <div class="analysis-cards">
+                        <div class="analysis-card">
+                            <h4>💝 Empathy Score</h4>
+                            <div class="score-bar"><div class="score-fill" id="empathy-score"></div></div>
+                            <p id="empathy-text"></p>
+                        </div>
+                        <div class="analysis-card">
+                            <h4>🎁 Generosity Level</h4>
+                            <div class="score-bar"><div class="score-fill" id="generosity-score"></div></div>
+                            <p id="generosity-text"></p>
+                        </div>
+                        <div class="analysis-card">
+                            <h4>🕊️ Peace Making</h4>
+                            <div class="score-bar"><div class="score-fill" id="peace-score"></div></div>
+                            <p id="peace-text"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="growth-tab" class="tab-content">
+                    <h3>🌱 Personal Growth Plan</h3>
+                    <div class="growth-timeline">
+                        <div class="growth-week">
+                            <h4>Week 1: Gratitude Foundation</h4>
+                            <ul>
+                                <li>✅ Write 3 things you're grateful for daily</li>
+                                <li>✅ Thank someone who helped you this year</li>
+                                <li>✅ Practice mindful appreciation</li>
+                            </ul>
+                        </div>
+                        <div class="growth-week">
+                            <h4>Week 2: Acts of Kindness</h4>
+                            <ul>
+                                <li>🎯 Perform 3 random acts of kindness</li>
+                                <li>🎯 Help a neighbor or colleague</li>
+                                <li>🎯 Donate to a local charity</li>
+                            </ul>
+                        </div>
+                        <div class="growth-week">
+                            <h4>Week 3: Connection & Love</h4>
+                            <ul>
+                                <li>💫 Reconnect with old friends</li>
+                                <li>💫 Have meaningful conversations</li>
+                                <li>💫 Express love to family</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="activities-tab" class="tab-content">
+                    <h3>🎄 Karma Boosting Activities</h3>
+                    <div class="activities-grid">
+                        <div class="activity-card">
+                            <span class="activity-icon">🏠</span>
+                            <h4>Volunteer at Shelter</h4>
+                            <p>Spend time helping at local homeless shelter</p>
+                            <button class="activity-btn">Mark Complete</button>
+                        </div>
+                        <div class="activity-card">
+                            <span class="activity-icon">✉️</span>
+                            <h4>Write Thank You Notes</h4>
+                            <p>Send heartfelt notes to people who matter</p>
+                            <button class="activity-btn">Mark Complete</button>
+                        </div>
+                        <div class="activity-card">
+                            <span class="activity-icon">🧸</span>
+                            <h4>Donate Toys</h4>
+                            <p>Give toys to underprivileged children</p>
+                            <button class="activity-btn">Mark Complete</button>
+                        </div>
+                        <div class="activity-card">
+                            <span class="activity-icon">👵</span>
+                            <h4>Help Elderly</h4>
+                            <p>Assist elderly neighbors with daily tasks</p>
+                            <button class="activity-btn">Mark Complete</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="back-to-main" class="btn-secondary">Back to Home</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Designed by one developer with 💖 for all wonderful users</p>
+        <div class="footer-links">
+            <a href="privacy-policy.html">Privacy Policy</a> | 
+            <a href="terms-conditions.html">Terms & Conditions</a> | 
+            <a href="refund-policy.html">Refund Policy</a> | 
+            <a href="contact.html">Contact</a>
+        </div>
+    </footer>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="payment-config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
