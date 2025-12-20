@@ -1206,9 +1206,11 @@ body {
     }
     
     .btn-primary, .btn-secondary, .btn-share, .btn-premium {
-        padding: 12px 24px;
-        font-size: 1rem;
-        margin: 8px;
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        margin: 10px;
+        width: 90%;
+        max-width: 300px;
     }
     
     .welcome-content h2 {
