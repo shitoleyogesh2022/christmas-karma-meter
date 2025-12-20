@@ -150,6 +150,8 @@ class ChristmasKarmaMeter {
         });
         document.getElementById('buy-premium').addEventListener('click', () => this.buyPremium());
         document.getElementById('donate-premium').addEventListener('click', () => this.donatePremium());
+        document.getElementById('donate-more').addEventListener('click', () => this.donatePremium());
+        document.getElementById('premium-donate').addEventListener('click', () => this.donatePremium());
         document.getElementById('back-to-result').addEventListener('click', () => this.showResult());
         document.getElementById('back-to-main').addEventListener('click', () => {
             if (this.score > 0) {

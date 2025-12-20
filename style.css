@@ -760,6 +760,29 @@ body {
     margin-bottom: 30px;
 }
 
+.premium-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.btn-donate-small {
+    background: linear-gradient(45deg, #ff9800, #f57c00);
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-donate-small:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
+}
+
 .premium-badge {
     background: linear-gradient(45deg, #ffd700, #ffb347);
     color: #333;
@@ -857,6 +880,40 @@ body {
 .growth-week li {
     padding: 8px 0;
     font-size: 1rem;
+}
+
+.donation-section {
+    margin-bottom: 30px;
+}
+
+.santa-donation {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+    padding: 25px;
+    border-radius: 20px;
+    border: 2px solid #ff9800;
+    margin-bottom: 25px;
+}
+
+.santa-image {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+
+.donation-content h4 {
+    color: #e65100;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.donation-content p {
+    color: #bf360c;
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+    line-height: 1.4;
 }
 
 .activities-grid {
@@ -972,6 +1029,22 @@ body {
         flex-direction: column;
         gap: 10px;
         text-align: center;
+    }
+    
+    .premium-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .santa-donation {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .santa-image {
+        width: 60px;
+        height: 60px;
     }
     
     .quick-info {
