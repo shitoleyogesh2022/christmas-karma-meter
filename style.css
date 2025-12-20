@@ -541,6 +541,8 @@ body {
     border: 2px dashed #ccc;
     opacity: 0.7;
     white-space: nowrap;
+    padding: 10px 20px;
+    font-size: 0.9rem;
 }
 
 .progress-section {
@@ -1211,12 +1213,34 @@ body {
         font-size: 0.7rem;
     }
     
-    .btn-primary, .btn-secondary, .btn-share, .btn-premium {
+    .btn-primary {
         padding: 15px 20px;
         font-size: 1rem;
         margin: 10px;
         width: 90%;
         max-width: 300px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .btn-secondary, .btn-share {
+        padding: 15px 20px;
+        font-size: 1rem;
+        margin: 10px;
+        width: 90%;
+        max-width: 300px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .btn-premium {
+        padding: 8px 15px;
+        font-size: 0.8rem;
+        margin: 8px;
+        width: 70%;
+        max-width: 220px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
