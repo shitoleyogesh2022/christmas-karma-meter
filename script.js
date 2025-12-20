@@ -111,9 +111,14 @@ class ChristmasKarmaMeter {
     }
 
     init() {
+        console.log('Initializing Christmas Karma Meter...');
         this.createSnowfall();
         this.bindEvents();
         this.checkPremiumStatus();
+        
+        // Test button existence
+        console.log('Start button exists:', !!document.getElementById('start-btn'));
+        console.log('Enter code button exists:', !!document.getElementById('enter-code-btn'));
     }
 
     checkPremiumStatus() {
@@ -138,31 +143,43 @@ class ChristmasKarmaMeter {
     }
 
     bindEvents() {
-        document.getElementById('start-btn').addEventListener('click', () => this.startQuiz());
-        document.getElementById('restart-btn').addEventListener('click', () => this.restart());
-        document.getElementById('share-btn').addEventListener('click', () => this.shareResult());
-        document.getElementById('premium-btn').addEventListener('click', () => {
+        // Add error handling for missing elements
+        const addEventListenerSafe = (id, event, handler) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.addEventListener(event, handler);
+            } else {
+                console.warn(`Element with id '${id}' not found`);
+            }
+        };
+        
+        addEventListenerSafe('start-btn', 'click', () => this.startQuiz());
+        addEventListenerSafe('restart-btn', 'click', () => this.restart());
+        addEventListenerSafe('share-btn', 'click', () => this.shareResult());
+        addEventListenerSafe('premium-btn', 'click', () => {
             if (localStorage.getItem('premiumUser')) {
                 this.showPremiumDashboard();
             } else {
                 this.showPremium();
             }
         });
-        document.getElementById('buy-premium').addEventListener('click', () => this.buyPremium());
-        document.getElementById('donate-premium').addEventListener('click', () => this.donatePremium('premium-screen'));
-        document.getElementById('donate-more').addEventListener('click', () => this.donatePremium('header-button'));
-        document.getElementById('premium-donate').addEventListener('click', () => this.donatePremium('activities-tab'));
-        document.getElementById('analysis-donate').addEventListener('click', () => this.donatePremium('analysis-tab'));
-        document.getElementById('back-to-result').addEventListener('click', () => this.showResult());
-        document.getElementById('back-to-main').addEventListener('click', () => {
+        addEventListenerSafe('buy-premium', 'click', () => this.buyPremium());
+        addEventListenerSafe('donate-premium', 'click', () => this.donatePremium('premium-screen'));
+        addEventListenerSafe('donate-more', 'click', () => this.donatePremium('header-button'));
+        addEventListenerSafe('premium-donate', 'click', () => this.donatePremium('activities-tab'));
+        addEventListenerSafe('analysis-donate', 'click', () => this.donatePremium('analysis-tab'));
+        addEventListenerSafe('back-to-result', 'click', () => this.showResult());
+        addEventListenerSafe('back-to-main', 'click', () => {
             if (this.score > 0) {
                 this.showResult();
             } else {
                 this.showScreen('welcome-screen');
             }
         });
-        document.getElementById('dashboard-btn').addEventListener('click', () => this.showPremiumDashboard());
-        
+        addEventListenerSafe('enter-code-btn', 'click', () => this.showPremiumCodeScreen());
+        addEventListenerSafe('verify-code-btn', 'click', () => this.verifyPremiumCode());
+        addEventListenerSafe('back-to-welcome', 'click', () => this.showScreen('welcome-screen'));
+        addEventListenerSafe('dashboard-btn', 'click', () => this.showPremiumDashboard());
         // Tab switching and activity completion - will be bound after DOM loads
         setTimeout(() => {
             document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -180,6 +197,7 @@ class ChristmasKarmaMeter {
     }
 
     startQuiz() {
+        console.log('Starting quiz...');
         this.showScreen('quiz-screen');
         this.displayQuestion();
     }
@@ -453,22 +471,111 @@ class ChristmasKarmaMeter {
     handlePaymentSuccess(response) {
         console.log('Payment Success:', response);
         
+        // Generate premium code via backend
+        this.generatePremiumCode(response.razorpay_payment_id);
+        
         // Enable premium features
         this.maxFreeShares = 999;
         localStorage.setItem('premiumUser', 'true');
         localStorage.setItem('paymentId', response.razorpay_payment_id);
         
-        // Check if it was a donation
-        const isDonation = localStorage.getItem('isDonation');
-        if (isDonation) {
-            alert('💖 Thank you for your generous donation! You\'re spreading Christmas joy! Welcome to Premium! ✨');
-            localStorage.removeItem('isDonation');
-        } else {
-            alert('🎄 Payment Successful! Welcome to Premium! ✨');
-        }
-        
         this.showPremiumDashboard();
     }
+    
+    async generatePremiumCode(paymentId) {
+        try {
+            const backendUrl = CONFIG.getBackendUrl();
+            
+            const response = await fetch(`${backendUrl}/api/generate-code`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ payment_id: paymentId })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                localStorage.setItem('premiumCode', result.code);
+                
+                // Check if it was a donation
+                const isDonation = localStorage.getItem('isDonation');
+                if (isDonation) {
+                    alert(`💖 Thank you for your generous donation! Your Premium Code: ${result.code}\n\nSave this code to access premium on up to 2 devices! Welcome to Premium! ✨`);
+                    localStorage.removeItem('isDonation');
+                } else {
+                    alert(`🎄 Payment Successful! Your Premium Code: ${result.code}\n\nSave this code to access premium on up to 2 devices! Welcome to Premium! ✨`);
+                }
+            }
+        } catch (error) {
+            console.error('Failed to generate premium code:', error);
+            
+            // Generate local premium code as fallback
+            const localCode = 'CK' + Math.random().toString(36).substr(2, 4).toUpperCase();
+            localStorage.setItem('premiumCode', localCode);
+            
+            // Check if it was a donation
+            const isDonation = localStorage.getItem('isDonation');
+            if (isDonation) {
+                alert(`💖 Thank you for your generous donation! Your Premium Code: ${localCode}\n\nSave this code to access premium on up to 2 devices! Welcome to Premium! ✨`);
+                localStorage.removeItem('isDonation');
+            } else {
+                alert(`🎄 Payment Successful! Your Premium Code: ${localCode}\n\nSave this code to access premium on up to 2 devices! Welcome to Premium! ✨`);
+            }
+        }
+    }
+    showPremiumCodeScreen() {
+        console.log('Showing premium code screen...');
+        this.showScreen('premium-code-screen');
+    }
+    async verifyPremiumCode() {
+        const codeInput = document.getElementById('premium-code-input');
+        const enteredCode = codeInput.value.trim().toUpperCase();
+        
+        if (!enteredCode || enteredCode.length !== 6) {
+            alert('🎄 Please enter a valid 6-character premium code!');
+            return;
+        }
+        
+        try {
+            const backendUrl = CONFIG.getBackendUrl();
+            
+            const response = await fetch(`${backendUrl}/api/verify-code`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: enteredCode })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                // Enable premium features
+                this.maxFreeShares = 999;
+                localStorage.setItem('premiumUser', 'true');
+                localStorage.setItem('premiumCode', enteredCode);
+                
+                alert('🎄 Premium code verified! Welcome to Premium! ✨');
+                this.showPremiumDashboard();
+            } else {
+                alert('🚫 ' + (result.message || 'Invalid code or device limit reached!'));
+            }
+        } catch (error) {
+            console.error('Code verification failed:', error);
+            
+            // Fallback: Check if code starts with 'CK' (local verification)
+            if (enteredCode.startsWith('CK') && enteredCode.length === 6) {
+                // Enable premium features
+                this.maxFreeShares = 999;
+                localStorage.setItem('premiumUser', 'true');
+                localStorage.setItem('premiumCode', enteredCode);
+                
+                alert('🎄 Premium code verified! Welcome to Premium! ✨');
+                this.showPremiumDashboard();
+            } else {
+                alert('🚫 Failed to verify code. Please check your internet connection or try again.');
+            }
+        }
+    }
+
     showPremiumDashboard() {
         this.generatePremiumAnalysis();
         this.showScreen('premium-dashboard');
@@ -587,5 +694,11 @@ class ChristmasKarmaMeter {
 
 // Initialize the app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    new ChristmasKarmaMeter();
+    console.log('DOM loaded, initializing Christmas Karma Meter...');
+    try {
+        new ChristmasKarmaMeter();
+        console.log('Christmas Karma Meter initialized successfully');
+    } catch (error) {
+        console.error('Failed to initialize Christmas Karma Meter:', error);
+    }
 });

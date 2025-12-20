@@ -125,6 +125,95 @@ app.post('/api/verify-payment', async (req, res) => {
     }
 });
 
+// In-memory storage for premium codes (use database in production)
+const premiumCodes = new Map();
+
+// Generate Premium Code
+app.post('/api/generate-code', (req, res) => {
+    try {
+        const { payment_id } = req.body;
+        
+        if (!payment_id) {
+            return res.status(400).json({ error: 'Payment ID required' });
+        }
+        
+        // Generate unique code
+        const code = 'CK' + Math.random().toString(36).substr(2, 4).toUpperCase();
+        
+        // Store code with device tracking
+        premiumCodes.set(code, {
+            payment_id: payment_id,
+            devices: [],
+            created_at: new Date(),
+            max_devices: 2
+        });
+        
+        res.json({ success: true, code: code });
+        
+    } catch (error) {
+        console.error('Code generation error:', error);
+        res.status(500).json({ error: 'Failed to generate code' });
+    }
+});
+
+// Verify Premium Code
+app.post('/api/verify-code', (req, res) => {
+    try {
+        const { code } = req.body;
+        
+        if (!code) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Premium code is required' 
+            });
+        }
+        
+        const codeData = premiumCodes.get(code.toUpperCase());
+        
+        if (!codeData) {
+            return res.json({ 
+                success: false, 
+                message: 'Invalid premium code' 
+            });
+        }
+        
+        // Generate device fingerprint (simple version)
+        const deviceId = req.headers['user-agent'] + req.ip;
+        const deviceHash = require('crypto').createHash('md5').update(deviceId).digest('hex');
+        
+        // Check if device already registered
+        if (codeData.devices.includes(deviceHash)) {
+            return res.json({ 
+                success: true, 
+                message: 'Welcome back! Premium access granted.' 
+            });
+        }
+        
+        // Check device limit
+        if (codeData.devices.length >= codeData.max_devices) {
+            return res.json({ 
+                success: false, 
+                message: `Device limit reached. This code can only be used on ${codeData.max_devices} devices.` 
+            });
+        }
+        
+        // Add new device
+        codeData.devices.push(deviceHash);
+        
+        res.json({ 
+            success: true, 
+            message: 'Premium access granted! Welcome to Christmas Karma Premium!' 
+        });
+        
+    } catch (error) {
+        console.error('Code verification error:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Failed to verify code' 
+        });
+    }
+});
+
 // Webhook endpoint for Razorpay
 app.post('/api/webhook', (req, res) => {
     const webhookSignature = req.headers['x-razorpay-signature'];
