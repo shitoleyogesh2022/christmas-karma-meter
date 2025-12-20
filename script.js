@@ -149,6 +149,7 @@ class ChristmasKarmaMeter {
             }
         });
         document.getElementById('buy-premium').addEventListener('click', () => this.buyPremium());
+        document.getElementById('donate-premium').addEventListener('click', () => this.donatePremium());
         document.getElementById('back-to-result').addEventListener('click', () => this.showResult());
         document.getElementById('back-to-main').addEventListener('click', () => {
             if (this.score > 0) {
@@ -358,6 +359,85 @@ class ChristmasKarmaMeter {
         }
     }
 
+    async donatePremium() {
+        const donationAmounts = [9900, 19900, 49900, 99900]; // ₹99, ₹199, ₹499, ₹999
+        const selectedAmount = donationAmounts[Math.floor(Math.random() * donationAmounts.length)];
+        
+        try {
+            const backendUrl = CONFIG.getBackendUrl();
+            
+            const orderResponse = await fetch(`${backendUrl}/api/create-order`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount: selectedAmount, currency: 'INR' })
+            });
+            
+            const orderData = await orderResponse.json();
+            if (!orderData.success) throw new Error('Failed to create order');
+            
+            const options = {
+                "key": orderData.key_id,
+                "amount": orderData.amount,
+                "currency": orderData.currency,
+                "name": "Christmas Karma Meter",
+                "description": `Donation + Premium Access (₹${selectedAmount/100})`,
+                "order_id": orderData.order_id,
+                "handler": (response) => this.verifyPayment(response),
+                "prefill": { "name": "Generous User", "email": "christmaskarmameter@gmail.com" },
+                "theme": { "color": "#ff9800" }
+            };
+            
+            const rzp = new Razorpay(options);
+            rzp.on('payment.failed', (response) => {
+                alert('🚫 Payment Failed: ' + response.error.description);
+            });
+            rzp.open();
+        } catch (error) {
+            alert('🚫 Failed to initiate donation. Please try again.');
+        }
+    async donatePremium() {
+        const donationAmounts = [9900, 19900, 49900, 99900]; // ₹99, ₹199, ₹499, ₹999
+        const selectedAmount = donationAmounts[Math.floor(Math.random() * donationAmounts.length)];
+        
+        // Mark as donation for success message
+        localStorage.setItem('isDonation', 'true');
+        
+        try {
+            const backendUrl = CONFIG.getBackendUrl();
+            
+            const orderResponse = await fetch(`${backendUrl}/api/create-order`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount: selectedAmount, currency: 'INR' })
+            });
+            
+            const orderData = await orderResponse.json();
+            if (!orderData.success) throw new Error('Failed to create order');
+            
+            const options = {
+                "key": orderData.key_id,
+                "amount": orderData.amount,
+                "currency": orderData.currency,
+                "name": "Christmas Karma Meter",
+                "description": `Donation + Premium Access (₹${selectedAmount/100})`,
+                "order_id": orderData.order_id,
+                "handler": (response) => this.verifyPayment(response),
+                "prefill": { "name": "Generous User", "email": "christmaskarmameter@gmail.com" },
+                "theme": { "color": "#ff9800" }
+            };
+            
+            const rzp = new Razorpay(options);
+            rzp.on('payment.failed', (response) => {
+                alert('🚫 Payment Failed: ' + response.error.description);
+                localStorage.removeItem('isDonation');
+            });
+            rzp.open();
+        } catch (error) {
+            alert('🚫 Failed to initiate donation. Please try again.');
+            localStorage.removeItem('isDonation');
+        }
+    }
+
     handlePaymentSuccess(response) {
         console.log('Payment Success:', response);
         
@@ -366,11 +446,17 @@ class ChristmasKarmaMeter {
         localStorage.setItem('premiumUser', 'true');
         localStorage.setItem('paymentId', response.razorpay_payment_id);
         
-        alert('🎄 Payment Successful! Welcome to Premium! ✨');
+        // Check if it was a donation
+        const isDonation = localStorage.getItem('isDonation');
+        if (isDonation) {
+            alert('💖 Thank you for your generous donation! You\'re spreading Christmas joy! Welcome to Premium! ✨');
+            localStorage.removeItem('isDonation');
+        } else {
+            alert('🎄 Payment Successful! Welcome to Premium! ✨');
+        }
+        
         this.showPremiumDashboard();
     }
-
-    showPremiumDashboard() {
         this.generatePremiumAnalysis();
         this.showScreen('premium-dashboard');
     }
