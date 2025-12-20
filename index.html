@@ -12,7 +12,10 @@
     
     <div class="container">
         <header class="header">
-            <h1 class="title"><span class="tree-emoji">🎄</span> Christmas Karma Meter</h1>
+            <div class="title-section">
+                <h1 class="title"><span class="tree-emoji">🎄</span> Christmas Karma Meter</h1>
+                <img src="pngtree-cheerful-3d-model-of-santa-claus-on-transperent-background-funny-cartoon-png-image_16025864.png" alt="Santa" class="santa-title-image">
+            </div>
             <p class="subtitle">Discover the magic of your holiday spirit</p>
             <div class="quick-info">
                 <span>⏱️ Takes less than 60 seconds</span>
@@ -31,6 +34,9 @@
                     <button id="dashboard-btn" class="btn-premium">✨ Access Premium Dashboard</button>
                 </div>
                 <p class="social-proof">⭐ Loved by festive souls this season</p>
+                <div class="santa-welcome">
+                    <img src="pngtree-cheerful-3d-model-of-santa-claus-on-transperent-background-funny-cartoon-png-image_16025864.png" alt="Santa" class="santa-welcome-image">
+                </div>
             </div>
         </div>
 
@@ -105,6 +111,10 @@
                         <div class="pricing-option donation">
                             <div class="price">₹99+</div>
                             <p>Support & Premium Access</p>
+                            <div class="custom-amount">
+                                <input type="number" id="donation-amount" placeholder="Enter amount" min="99" value="111">
+                                <span class="currency">₹</span>
+                            </div>
                             <button id="donate-premium" class="btn-donate">Donate & Unlock 💝</button>
                         </div>
                     </div>
@@ -134,6 +144,20 @@
 
                 <div id="analysis-tab" class="tab-content active">
                     <h3>🧠 Detailed Karma Analysis</h3>
+                    <div class="donation-section">
+                        <div class="santa-donation">
+                            <img src="pngtree-cheerful-3d-model-of-santa-claus-on-transperent-background-funny-cartoon-png-image_16025864.png" alt="Santa" class="santa-image">
+                            <div class="donation-content">
+                                <h4>🎅 Spread More Christmas Joy!</h4>
+                                <p>Your generosity helps us reach more hearts this Christmas season. Every donation spreads more love and kindness!</p>
+                                <div class="custom-amount">
+                                    <input type="number" id="analysis-donation-amount" placeholder="Enter amount" min="50" value="111">
+                                    <span class="currency">₹</span>
+                                </div>
+                                <button id="analysis-donate" class="btn-donate">💖 Make a Donation</button>
+                            </div>
+                        </div>
+                    </div>
                     <div class="analysis-cards">
                         <div class="analysis-card">
                             <h4>💝 Empathy Score</h4>
@@ -191,6 +215,10 @@
                             <div class="donation-content">
                                 <h4>🎅 Spread More Christmas Joy!</h4>
                                 <p>Your generosity helps us reach more hearts this Christmas season. Every donation spreads more love and kindness!</p>
+                                <div class="custom-amount">
+                                    <input type="number" id="premium-donation-amount" placeholder="Enter amount" min="50" value="111">
+                                    <span class="currency">₹</span>
+                                </div>
                                 <button id="premium-donate" class="btn-donate">💖 Make a Donation</button>
                             </div>
                         </div>

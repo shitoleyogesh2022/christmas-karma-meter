@@ -149,9 +149,10 @@ class ChristmasKarmaMeter {
             }
         });
         document.getElementById('buy-premium').addEventListener('click', () => this.buyPremium());
-        document.getElementById('donate-premium').addEventListener('click', () => this.donatePremium());
-        document.getElementById('donate-more').addEventListener('click', () => this.donatePremium());
-        document.getElementById('premium-donate').addEventListener('click', () => this.donatePremium());
+        document.getElementById('donate-premium').addEventListener('click', () => this.donatePremium('premium-screen'));
+        document.getElementById('donate-more').addEventListener('click', () => this.donatePremium('header-button'));
+        document.getElementById('premium-donate').addEventListener('click', () => this.donatePremium('activities-tab'));
+        document.getElementById('analysis-donate').addEventListener('click', () => this.donatePremium('analysis-tab'));
         document.getElementById('back-to-result').addEventListener('click', () => this.showResult());
         document.getElementById('back-to-main').addEventListener('click', () => {
             if (this.score > 0) {
@@ -361,9 +362,51 @@ class ChristmasKarmaMeter {
         }
     }
 
-    async donatePremium() {
-        const donationAmounts = [9900, 19900, 49900, 99900]; // ₹99, ₹199, ₹499, ₹999
-        const selectedAmount = donationAmounts[Math.floor(Math.random() * donationAmounts.length)];
+    async donatePremium(sourceButton = 'unknown') {
+        console.log('Donation triggered from:', sourceButton);
+        
+        let customAmount;
+        let inputField;
+        
+        // Determine which input field to use based on source button
+        switch(sourceButton) {
+            case 'premium-screen':
+                inputField = document.getElementById('donation-amount');
+                break;
+            case 'activities-tab':
+                inputField = document.getElementById('premium-donation-amount');
+                break;
+            case 'analysis-tab':
+                inputField = document.getElementById('analysis-donation-amount');
+                break;
+            case 'header-button':
+                // For header button, try to find any visible input field
+                inputField = document.getElementById('premium-donation-amount') || 
+                           document.getElementById('analysis-donation-amount');
+                break;
+            default:
+                // Fallback - find any available input
+                inputField = document.getElementById('donation-amount') || 
+                           document.getElementById('premium-donation-amount') || 
+                           document.getElementById('analysis-donation-amount');
+        }
+        
+        if (inputField && inputField.value && parseInt(inputField.value) > 0) {
+            customAmount = parseInt(inputField.value) * 100;
+            console.log('Using input from', sourceButton, ':', inputField.value);
+        } else {
+            // Fallback to ₹111 if somehow no input is found
+            customAmount = 11100;
+            console.log('Using fallback amount: 111');
+        }
+        
+        // Minimum donation validation
+        if (customAmount < 5000) { // Minimum ₹50
+            alert('🎄 Minimum donation amount is ₹50. Thank you for your generosity!');
+            return;
+        }
+        
+        console.log('Final donation amount:', customAmount/100, 'rupees');
         
         // Mark as donation for success message
         localStorage.setItem('isDonation', 'true');
@@ -374,18 +417,20 @@ class ChristmasKarmaMeter {
             const orderResponse = await fetch(`${backendUrl}/api/create-order`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ amount: selectedAmount, currency: 'INR' })
+                body: JSON.stringify({ amount: customAmount, currency: 'INR' })
             });
             
             const orderData = await orderResponse.json();
             if (!orderData.success) throw new Error('Failed to create order');
+            
+            console.log('Order created with amount:', orderData.amount/100, 'rupees');
             
             const options = {
                 "key": orderData.key_id,
                 "amount": orderData.amount,
                 "currency": orderData.currency,
                 "name": "Christmas Karma Meter",
-                "description": `Donation + Premium Access (₹${selectedAmount/100})`,
+                "description": `Donation + Premium Access (₹${customAmount/100})`,
                 "order_id": orderData.order_id,
                 "handler": (response) => this.verifyPayment(response),
                 "prefill": { "name": "Generous User", "email": "christmaskarmameter@gmail.com" },
@@ -399,6 +444,7 @@ class ChristmasKarmaMeter {
             });
             rzp.open();
         } catch (error) {
+            console.error('Donation error:', error);
             alert('🚫 Failed to initiate donation. Please try again.');
             localStorage.removeItem('isDonation');
         }
