@@ -1236,11 +1236,11 @@ body {
     }
     
     .btn-premium {
-        padding: 8px 15px;
-        font-size: 0.8rem;
+        padding: 12px 20px;
+        font-size: 0.85rem;
         margin: 8px;
-        width: 70%;
-        max-width: 220px;
+        width: 90%;
+        max-width: 300px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
