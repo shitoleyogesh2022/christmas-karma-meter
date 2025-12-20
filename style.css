@@ -1236,14 +1236,13 @@ body {
     }
     
     .btn-premium {
-        padding: 12px 20px;
-        font-size: 0.5rem;
+        padding: 10px 15px;
+        font-size: 0.7rem;
         margin: 8px;
-        width: 90%;
-        max-width: 300px;
+        width: 95%;
+        max-width: 320px;
         white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        overflow: visible;
     }
     
     .welcome-content h2 {
