@@ -363,42 +363,6 @@ class ChristmasKarmaMeter {
         const donationAmounts = [9900, 19900, 49900, 99900]; // ₹99, ₹199, ₹499, ₹999
         const selectedAmount = donationAmounts[Math.floor(Math.random() * donationAmounts.length)];
         
-        try {
-            const backendUrl = CONFIG.getBackendUrl();
-            
-            const orderResponse = await fetch(`${backendUrl}/api/create-order`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ amount: selectedAmount, currency: 'INR' })
-            });
-            
-            const orderData = await orderResponse.json();
-            if (!orderData.success) throw new Error('Failed to create order');
-            
-            const options = {
-                "key": orderData.key_id,
-                "amount": orderData.amount,
-                "currency": orderData.currency,
-                "name": "Christmas Karma Meter",
-                "description": `Donation + Premium Access (₹${selectedAmount/100})`,
-                "order_id": orderData.order_id,
-                "handler": (response) => this.verifyPayment(response),
-                "prefill": { "name": "Generous User", "email": "christmaskarmameter@gmail.com" },
-                "theme": { "color": "#ff9800" }
-            };
-            
-            const rzp = new Razorpay(options);
-            rzp.on('payment.failed', (response) => {
-                alert('🚫 Payment Failed: ' + response.error.description);
-            });
-            rzp.open();
-        } catch (error) {
-            alert('🚫 Failed to initiate donation. Please try again.');
-        }
-    async donatePremium() {
-        const donationAmounts = [9900, 19900, 49900, 99900]; // ₹99, ₹199, ₹499, ₹999
-        const selectedAmount = donationAmounts[Math.floor(Math.random() * donationAmounts.length)];
-        
         // Mark as donation for success message
         localStorage.setItem('isDonation', 'true');
         
@@ -457,6 +421,7 @@ class ChristmasKarmaMeter {
         
         this.showPremiumDashboard();
     }
+    showPremiumDashboard() {
         this.generatePremiumAnalysis();
         this.showScreen('premium-dashboard');
     }
