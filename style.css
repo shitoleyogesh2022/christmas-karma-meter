@@ -507,6 +507,7 @@ body {
     color: white;
     animation: gradientShift 3s ease infinite;
     box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
+    white-space: nowrap;
 }
 
 @keyframes gradientShift {
@@ -524,17 +525,22 @@ body {
     background: #f8f9fa;
     color: #333;
     border: 2px solid #dee2e6;
+    white-space: nowrap;
 }
 
 .btn-share {
     background: linear-gradient(45deg, #00d2ff, #3a7bd5);
     color: white;
+    white-space: nowrap;
 }
 
 .btn-premium {
-    background: linear-gradient(45deg, #ffd700, #ffb347);
-    color: #333;
-    font-weight: bold;
+    background: linear-gradient(45deg, rgba(255, 215, 0, 0.3), rgba(255, 179, 71, 0.3));
+    color: #666;
+    font-weight: normal;
+    border: 2px dashed #ccc;
+    opacity: 0.7;
+    white-space: nowrap;
 }
 
 .progress-section {
@@ -1206,11 +1212,14 @@ body {
     }
     
     .btn-primary, .btn-secondary, .btn-share, .btn-premium {
-        padding: 15px 30px;
-        font-size: 1.1rem;
+        padding: 15px 20px;
+        font-size: 1rem;
         margin: 10px;
         width: 90%;
         max-width: 300px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
     .welcome-content h2 {
