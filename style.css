@@ -310,15 +310,35 @@ body {
     box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
 }
 
+.footer-bottom {
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.95), rgba(118, 75, 162, 0.95));
+    padding: 15px 0;
+    text-align: center;
+    margin-top: 50px;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.developer-credit-bottom {
+    margin: 0 0 8px 0;
+    font-size: 0.9rem;
+    color: #ffffff;
+    font-style: italic;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+    font-weight: 500;
+}
+
 .footer-links {
-    margin-bottom: 2px;
-    font-size: 0.6rem;
+    margin: 0;
+    font-size: 0.8rem;
 }
 
 .footer-links a {
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.9);
     text-decoration: none;
-    margin: 0 2px;
+    margin: 0 5px;
 }
 
 .footer-links a:hover {
@@ -1129,12 +1149,13 @@ body {
         padding: 4px 8px;
     }
     
-    .footer p {
-        font-size: 0.6rem;
+    .developer-credit-bottom {
+        font-size: 0.8rem;
+        margin-bottom: 6px;
     }
     
     .footer-links {
-        font-size: 0.55rem;
+        font-size: 0.7rem;
     }
     
     .btn-primary, .btn-secondary, .btn-share, .btn-premium {
